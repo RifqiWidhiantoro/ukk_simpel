@@ -14,33 +14,71 @@ $user_id = $_SESSION['user_id'];
 $message = "";
 
 // Ambil data pengguna
-$result = $conn->query("SELECT * FROM users WHERE id = $user_id");
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 $user = $result->fetch_assoc();
+$stmt->close();
 
 // Proses update profil
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = isset($_POST['username']) ? $conn->real_escape_string($_POST['username']) : '';
     $email = isset($_POST['email']) ? $conn->real_escape_string($_POST['email']) : '';
     $password = isset($_POST['password']) ? $conn->real_escape_string($_POST['password']) : '';
+    $profile_photo = $user['profile_photo'];
+
+    // Handle file upload dengan validasi
+    if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] == UPLOAD_ERR_OK) {
+        $allowed_extensions = ['jpg', 'jpeg', 'png'];
+        $max_size = 3 * 1024 * 1024; // 3 MB
+        $file_name = $_FILES['profile_photo']['name'];
+        $file_size = $_FILES['profile_photo']['size'];
+        $file_tmp  = $_FILES['profile_photo']['tmp_name'];
+        $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        if (!in_array($ext, $allowed_extensions)) {
+            $message = "Hanya file JPG, JPEG, atau PNG yang diperbolehkan.";
+        } elseif ($file_size > $max_size) {
+            $message = "Ukuran file maksimal 3 MB.";
+        } else {
+            $upload_dir = 'pictures/';
+            // Buat nama file baru menggunakan timestamp
+            $new_file_name = $upload_dir . time() . '_' . preg_replace("/[^a-zA-Z0-9_\-\.]/", "_", $file_name);
+            if (move_uploaded_file($file_tmp, $new_file_name)) {
+                // Hapus foto lama jika bukan default dan file ada
+                if ($user['profile_photo'] != 'pictures/default.png' && file_exists($user['profile_photo'])) {
+                    unlink($user['profile_photo']);
+                }
+                $profile_photo = $new_file_name;
+            } else {
+                $message = "Gagal mengupload file.";
+            }
+        }
+    }
 
     if (!empty($username) && !empty($email)) {
         if (!empty($password)) {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $conn->query("UPDATE users SET username='$username', email='$email', password='$hashed_password' WHERE id=$user_id");
+            $stmt = $conn->prepare("UPDATE users SET username = ?, email = ?, password = ?, profile_photo = ? WHERE id = ?");
+            $stmt->bind_param("ssssi", $username, $email, $hashed_password, $profile_photo, $user_id);
         } else {
-            $conn->query("UPDATE users SET username='$username', email='$email' WHERE id=$user_id");
+            $stmt = $conn->prepare("UPDATE users SET username = ?, email = ?, profile_photo = ? WHERE id = ?");
+            $stmt->bind_param("sssi", $username, $email, $profile_photo, $user_id);
         }
-
+        $stmt->execute();
+        
         if ($conn->affected_rows > 0) {
             $message = "Profil berhasil diperbarui.";
             echo "<script>
                     alert('Profil berhasil diperbarui.');
-                    location.reload();
+                    window.location.href = 'profile.php';
                   </script>";
             exit();
         } else {
             $message = "Tidak ada perubahan yang dilakukan.";
         }
+        $stmt->close();
     } else {
         $message = "Username dan email harus diisi.";
     }
@@ -67,19 +105,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         h2 {
             text-align: center;
             margin-bottom: 20px;
+            color: #9b59b6;
         }
         form {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-        input[type="text"], 
-        input[type="email"], 
+        input[type="text"],
+        input[type="email"],
         input[type="password"],
+        input[type="file"],
         button {
             padding: 10px;
             border: 1px solid #ccc;
@@ -89,6 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background: linear-gradient(135deg, #71b7e6, #9b59b6);
             color: white;
             cursor: pointer;
+            border: none;
+            font-weight: bold;
         }
         button:hover {
             opacity: 0.9;
@@ -98,9 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-bottom: 20px;
             color: green;
             font-weight: bold;
-        }
-        .error {
-            color: red;
         }
         .back-link {
             display: block;
@@ -120,10 +160,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php if ($message): ?>
             <div class="message"><?= $message ?></div>
         <?php endif; ?>
-        <form method="POST" action="">
+        <form method="POST" action="" enctype="multipart/form-data">
             <input type="text" name="username" placeholder="Username" value="<?= htmlspecialchars($user['username']) ?>" required>
             <input type="email" name="email" placeholder="Email" value="<?= htmlspecialchars($user['email']) ?>" required>
             <input type="password" name="password" placeholder="Kata Sandi Baru (Opsional)">
+            <input type="file" name="profile_photo" accept="image/jpeg, image/jpg, image/png">
             <button type="submit">Simpan Perubahan</button>
         </form>
         <a class="back-link" href="profile.php"><i class="bi bi-arrow-left"></i> Kembali ke Profil</a>

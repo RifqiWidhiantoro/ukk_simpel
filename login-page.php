@@ -56,7 +56,7 @@ $conn->close();
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
         }
         .login-container {
             background: white;
@@ -80,21 +80,22 @@ $conn->close();
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
+            color: #1E3A8A;
         }
         .input-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ccc;
+            border: 1px solid #3B82F6;
             border-radius: 5px;
             transition: border-color 0.3s;
         }
         .input-group input:focus {
-            border-color: #9b59b6;
+            border-color: #1E3A8A;
         }
         .btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             color: white;
             border: none;
             border-radius: 5px;
@@ -102,17 +103,17 @@ $conn->close();
             transition: background 0.3s;
         }
         .btn:hover {
-            background: #9b59b6;
+            background: #1E3A8A;
         }
         .register-link {
             margin-top: 15px;
             display: block;
-            color: #9b59b6;
+            color: #1E3A8A;
             text-decoration: none;
             transition: color 0.3s;
         }
         .register-link:hover {
-            color: #6c3483;
+            color: #0F172A;
         }
         @keyframes fadeIn {
             from {
@@ -141,7 +142,7 @@ $conn->close();
 <body>
     <div class="login-container">
         <img src="logo.png" alt="Logo" class="logo">
-        <h2>Login</h2>
+        <h2 style="color: #1E3A8A;">Login</h2>
         <form method="POST" action="">
             <div class="input-group">
                 <label for="username">Username</label>

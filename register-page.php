@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi - To-Do List</title>
+    <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi - To-Do List</title>
     <style>
         * {
             margin: 0;
@@ -16,7 +22,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
         }
         .register-container {
             background: white;
@@ -53,12 +59,12 @@
             transition: border-color 0.3s;
         }
         .input-group input:focus {
-            border-color: #9b59b6;
+            border-color: #3B82F6;
         }
         .btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             color: white;
             border: none;
             border-radius: 5px;
@@ -66,17 +72,17 @@
             transition: background 0.3s;
         }
         .btn:hover {
-            background: #9b59b6;
+            background: #1E3A8A;
         }
         .login-link {
             margin-top: 15px;
             display: block;
-            color: #9b59b6;
+            color: #1E3A8A;
             text-decoration: none;
             transition: color 0.3s;
         }
         .login-link:hover {
-            color: #6c3483;
+            color: #3B82F6;
         }
         @keyframes fadeIn {
             from {
@@ -101,28 +107,6 @@
             }
         }
     </style>
-    <script>
-        function validateForm() {
-            var password = document.getElementById("password").value;
-            var confirmPassword = document.getElementById("confirm_password").value;
-            var email = document.getElementById("email").value;
-            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (password.length < 8) {
-                alert("Password harus minimal 8 karakter!");
-                return false;
-            }
-            if (!emailPattern.test(email)) {
-                alert("Format email tidak valid!");
-                return false;
-            }
-            if (password !== confirmPassword) {
-                alert("Password dan Konfirmasi Password tidak cocok!");
-                return false;
-            }
-            return true;
-        }
-    </script>
 </head>
 <body>
     <div class="register-container">
@@ -151,7 +135,20 @@
     </div>
 </body>
 </html>
-
+<script>
+    function validateForm() {
+        const password = document.getElementById("password").value;
+        const confirm_password = document.getElementById("confirm_password").value;
+        if (password !== confirm_password) {
+            alert("Password dan Konfirmasi Password tidak cocok!");
+            return false;
+        }
+        if (password.length < 8) {
+            alert("Password harus minimal 8 karakter!");
+            return false;
+        }
+        return true;
+    }
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST["username"]);
