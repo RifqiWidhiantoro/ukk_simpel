@@ -30,7 +30,7 @@ $joined_date = isset($user['created_at']) ? date('d F Y', strtotime($user['creat
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
         body {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             padding: 20px;
             font-family: Arial, sans-serif;
         }
@@ -44,7 +44,7 @@ $joined_date = isset($user['created_at']) ? date('d F Y', strtotime($user['creat
             text-align: center;
         }
         h2 {
-            color: #9b59b6;
+            color: #3B82F6;
             margin-bottom: 20px;
         }
         .profile-photo {
@@ -53,7 +53,7 @@ $joined_date = isset($user['created_at']) ? date('d F Y', strtotime($user['creat
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 20px;
-            border: 4px solid #9b59b6;
+            border: 4px solid #3B82F6;
         }
         .profile-info {
             text-align: left;
@@ -83,7 +83,7 @@ $joined_date = isset($user['created_at']) ? date('d F Y', strtotime($user['creat
         }
         .edit-profile { background: #f39c12; }
         .logout { background: #e74c3c; }
-        .back-dashboard { background:linear-gradient(135deg, #71b7e6, #9b59b6); }
+        .back-dashboard { background:linear-gradient(135deg, #1E3A8A, #3B82F6); }
     </style>
 </head>
 <body>

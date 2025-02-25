@@ -94,7 +94,7 @@ if ($user_role === 'admin') {
             font-family: Arial, sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             padding: 20px;
         }
         .container {
@@ -124,14 +124,14 @@ if ($user_role === 'admin') {
         }
         .form-group button {
             padding: 10px;
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
         .form-group button:hover {
-            background: #9b59b6;
+            background: #3B82F6;
         }
         table {
             width: 100%;
@@ -152,7 +152,7 @@ if ($user_role === 'admin') {
         }
         .edit { background: #ffc107; }
         .delete { background: #dc3545; color: white; }
-        .back { background: #9b59b6; color: white; padding: 10px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }
+        .back { background: #3B82F6; color: white; padding: 10px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }
     </style>
 </head>
 <body>

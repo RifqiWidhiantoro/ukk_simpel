@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
         body {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             font-family: Arial, sans-serif;
             padding: 20px;
         }
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #9b59b6;
+            color: #3B82F6;
         }
         form {
             display: flex;
@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 5px;
         }
         button {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             color: white;
             cursor: pointer;
             border: none;
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: #6c757d;
         }
         .back-link:hover {
-            color: #9b59b6;
+            color: #3B82F6;
         }
     </style>
 </head>

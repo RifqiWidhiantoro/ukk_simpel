@@ -46,7 +46,7 @@ $conn->close();
     <title>Edit Tugas - To-Do List</title>
     <style>
         body {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             padding: 20px;
             font-family: Arial, sans-serif;
         }
@@ -76,14 +76,14 @@ $conn->close();
             border-radius: 5px;
         }
         .task-form button {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #3B82F6, #1E3A8A);
             color: white;
             cursor: pointer;
             border: none;
             transition: background 0.3s;
         }
         .task-form button:hover {
-            background: linear-gradient(135deg, #9b59b6, #71b7e6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
         }
     </style>
 </head>
