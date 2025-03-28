@@ -25,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = "INSERT INTO tasks (user_id, title, description, priority, category_id, due_date) 
                 VALUES ($user_id, '$title', '$description', '$priority', $category_id, '$due_date')";
         if ($conn->query($sql) === TRUE) {
-            $message = "Tugas berhasil ditambahkan.";
             echo "<script>
                     alert('Tugas berhasil ditambahkan.');
                     window.location.href = 'dashboard.php';
@@ -38,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $message = "Judul dan tanggal jatuh tempo harus diisi.";
     }
 }
+
+$today = date('Y-m-d');
 ?>
 
 <!DOCTYPE html>
@@ -49,12 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
         body {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             font-family: Arial, sans-serif;
             padding: 20px;
         }
         .task-container {
-            max-width: 400px;
+            max-width: 90%;
             margin: auto;
             background: white;
             padding: 20px;
@@ -70,21 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             flex-direction: column;
             gap: 15px;
         }
-        input[type="text"], 
-        textarea, 
-        select, 
-        input[type="date"],
-        button {
-            padding: 10px;
+        input, textarea, select, button {
+            padding: 12px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 16px;
         }
         button {
-            background: linear-gradient(135deg, #71b7e6, #9b59b6);
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
             color: white;
             cursor: pointer;
+            transition: 0.3s;
         }
         button:hover {
+            transform: scale(1.05);
             opacity: 0.9;
         }
         .message {
@@ -93,18 +93,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: green;
             font-weight: bold;
         }
-        .error {
-            color: red;
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
         }
-        .back-link {
-            display: block;
+        .back-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 16px;
             text-align: center;
             margin-top: 10px;
-            text-decoration: none;
-            color: #6c757d;
         }
-        .back-link:hover {
-            color: #9b59b6;
+        .back-button:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
         }
     </style>
 </head>
@@ -112,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="task-container">
         <h2>Tambah Tugas</h2>
         <?php if ($message): ?>
-            <div class="message"><?= $message ?></div>
+            <div class="message"> <?= $message ?> </div>
         <?php endif; ?>
         <form method="POST" action="">
             <input type="text" name="title" placeholder="Judul Tugas" required>
@@ -129,13 +142,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $categories = $conn->query($cat_sql);
                 while ($category = $categories->fetch_assoc()):
                 ?>
-                    <option value="<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></option>
+                    <option value="<?= $category['id'] ?>"> <?= htmlspecialchars($category['name']) ?> </option>
                 <?php endwhile; ?>
             </select>
-            <input type="date" name="due_date" required>
-            <button type="submit">Tambah Tugas</button>
+            <input type="date" name="due_date" min="<?= $today ?>" required>
+            <div class="button-container">
+                <button type="submit">Tambah Tugas</button>
+                <a href="dashboard.php" class="back-button">Kembali ke Dashboard</a>
+            </div>
         </form>
-        <a href="dashboard.php" class="back-link"><i class="bi bi-arrow-left"></i> Kembali ke Dashboard</a>
     </div>
 </body>
 </html>
+<?php
+$conn->close();

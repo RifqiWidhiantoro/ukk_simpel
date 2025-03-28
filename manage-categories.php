@@ -152,7 +152,7 @@ if ($user_role === 'admin') {
         }
         .edit { background: #ffc107; }
         .delete { background: #dc3545; color: white; }
-        .back { background: #3B82F6; color: white; padding: 10px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }
+        .back { background: linear-gradient(135deg, #1E3A8A, #3B82F6); color: white; padding: 10px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 20px; }
     </style>
 </head>
 <body>

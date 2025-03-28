@@ -17,9 +17,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $priority = trim($_POST['priority']);
     $category_id = trim($_POST['category_id']);
     $due_date = trim($_POST['due_date']);
+    $status = trim($_POST['status']);
 
-    $stmt = $conn->prepare("UPDATE tasks SET title = ?, description = ?, priority = ?, category_id = ?, due_date = ? WHERE id = ?");
-    $stmt->bind_param("sssisi", $title, $description, $priority, $category_id, $due_date, $task_id);
+    // Restrict future status changes
+    $current_task = $conn->query("SELECT status FROM tasks WHERE id = $task_id")->fetch_assoc();
+    $current_status = $current_task['status'];
+
+    if (
+        ($current_status === 'pending' && $status !== 'pending') ||
+        ($current_status === 'progress' && $status === 'completed')
+    ) {
+        echo "Error: You cannot change the status to a future status.";
+        exit();
+    }
+
+    $stmt = $conn->prepare("UPDATE tasks SET title = ?, description = ?, priority = ?, category_id = ?, due_date = ?, status = ? WHERE id = ?");
+    $stmt->bind_param("sssissi", $title, $description, $priority, $category_id, $due_date, $status, $task_id);
 
     if ($stmt->execute()) {
         header("Location: dashboard.php");
@@ -108,6 +121,11 @@ $conn->close();
                 <?php endwhile; ?>
             </select>
             <input type="date" name="due_date" value="<?= htmlspecialchars($task['due_date']) ?>" min="<?= date('Y-m-d'); ?>" required>
+            <select name="status" required>
+                <option value="pending" <?= $task['status'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                <option value="progress" <?= $task['status'] == 'progress' ? 'selected' : '' ?>>Progress</option>
+                <option value="completed" <?= $task['status'] == 'completed' ? 'selected' : '' ?>>Completed</option>
+            </select>
             <button type="submit">Update Tugas</button>
         </form>
     </div>

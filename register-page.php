@@ -110,7 +110,7 @@
 </head>
 <body>
     <div class="register-container">
-        <img src="logo.png" alt="Logo" class="logo">
+        <img src="pictures/logo.png" alt="Logo" class="logo">
         <h2>Registrasi</h2>
         <form action="register-page.php" method="POST" onsubmit="return validateForm()">
             <div class="input-group">

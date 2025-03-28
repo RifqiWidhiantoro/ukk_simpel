@@ -141,7 +141,7 @@ $conn->close();
 </head>
 <body>
     <div class="login-container">
-        <img src="logo.png" alt="Logo" class="logo">
+        <img src="pictures/logo.png" alt="Logo" class="logo">
         <h2 style="color: #1E3A8A;">Login</h2>
         <form method="POST" action="">
             <div class="input-group">
