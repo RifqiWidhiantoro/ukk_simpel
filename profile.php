@@ -98,11 +98,11 @@ $joined_date = isset($user['created_at']) ? date('d F Y', strtotime($user['creat
             <?php endif; ?>
         </div>
         <div class="actions">
+        <a href="dashboard.php" class="back-dashboard">
+                <i class="bi bi-house"></i> Dashboard
+            </a>
             <a href="edit-profile.php" class="edit-profile">
                 <i class="bi bi-pencil-square"></i> Edit Profil
-            </a>
-            <a href="dashboard.php" class="back-dashboard">
-                <i class="bi bi-house"></i> Dashboard
             </a>
             <a href="logout.php" class="logout">
                 <i class="bi bi-box-arrow-right"></i> Logout

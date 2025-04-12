@@ -70,16 +70,16 @@ $count_res = $conn->query($count_sql);
 $count_row = $count_res->fetch_assoc();
 $tasks_today = $count_row['total_today'];
 
-// Generate a range of 5 days starting from the selected date
+// Generate a range of 3 days starting from the selected date
 $dates = [];
-for ($i = 0; $i < 5; $i++) {
+for ($i = 0; $i < 3; $i++) {
     $date_loop = date('Y-m-d', strtotime("$filter_date +$i day"));
     $dates[] = $date_loop;
 }
 
-// Previous and next 5-day ranges
-$prev_date = date('Y-m-d', strtotime($filter_date . ' -5 day'));
-$next_date = date('Y-m-d', strtotime($filter_date . ' +5 day'));
+// Previous and next 3-day ranges
+$prev_date = date('Y-m-d', strtotime($filter_date . ' -3 day'));
+$next_date = date('Y-m-d', strtotime($filter_date . ' +3 day'));
 
 // Count tasks for each date in the range
 $task_counts = [];
@@ -159,51 +159,65 @@ foreach ($dates as $date) {
             font-weight: bold;
         }
         header .bell-icon {
-            position: relative;
-            cursor: pointer;
-        }
-        header .bell-icon .notification {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 15px;
-            height: 15px;
-            background: red;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        position: relative;
+        cursor: pointer;
+    }
+
+         header .bell-icon .notification {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 15px;
+        height: 15px;
+        background: red;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
         .reminder-popup {
-            display: none;
-            position: absolute;
-            top: 40px;
-            left: 0;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            width: 300px;
-            z-index: 1000;
-        }
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        position: absolute;
+        top: 40px;
+        right: 0; /* Adjusted to align with the bell icon */
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        width: 300px;
+        max-width: 90vw; /* Responsive width */
+        z-index: 1000;
+    }
+        .reminder-popup.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
         .reminder-popup h4 {
             margin-bottom: 10px;
             font-size: 1rem;
             color: #333;
         }
+
         .reminder-popup ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
+
         .reminder-popup ul li {
             margin-bottom: 5px;
             font-size: 0.9rem;
             color: #555;
         }
+
         .reminder-popup ul li:last-child {
             margin-bottom: 0;
         }
@@ -426,10 +440,10 @@ foreach ($dates as $date) {
             <p><span class="task-count"><?= $tasks_today ?></span> Task Hari Ini</p>
         </div>
 
-        <!-- Navigasi Tanggal (5 hari) -->
+        <!-- Navigasi Tanggal (3 hari) -->
         <div class="date-nav">
-            <!-- Tombol Prev 5 Hari -->
-            <a href="?date=<?= $prev_date ?>" class="prev-date">&laquo; Prev 5d</a>
+            <!-- Tombol Prev 3 Hari -->
+            <a href="?date=<?= $prev_date ?>" class="prev-date">&laquo; Prev 3d</a>
 
             <!-- Tanggal Harian -->
             <?php foreach ($dates as $d): 
@@ -445,8 +459,8 @@ foreach ($dates as $date) {
             </a>
             <?php endforeach; ?>
 
-            <!-- Tombol Next 5 Hari -->
-            <a href="?date=<?= $next_date ?>" class="next-date">Next 5d &raquo;</a>
+            <!-- Tombol Next 3 Hari -->
+            <a href="?date=<?= $next_date ?>" class="next-date">Next 3d &raquo;</a>
         </div>
 
         <!-- Daftar Tugas -->
@@ -474,23 +488,24 @@ foreach ($dates as $date) {
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const bellIcon = document.querySelector('.bell-icon');
-            const reminderPopup = document.querySelector('.reminder-popup');
+    document.addEventListener('DOMContentLoaded', function () {
+    const bellIcon = document.querySelector('.bell-icon');
+    const reminderPopup = document.querySelector('.reminder-popup');
 
-            // Toggle the visibility of the reminder popup
-            bellIcon.addEventListener('click', function () {
-                reminderPopup.style.display = reminderPopup.style.display === 'block' ? 'none' : 'block';
-            });
+    // Toggle dengan efek fade (pakai class .active)
+    bellIcon.addEventListener('click', function (event) {
+        event.stopPropagation();
+        reminderPopup.classList.toggle('active');
+    });
 
-            // Close the popup when clicking outside of it
-            document.addEventListener('click', function (event) {
-                if (!bellIcon.contains(event.target) && !reminderPopup.contains(event.target)) {
-                    reminderPopup.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    // Tutup jika klik di luar bell atau popup
+    document.addEventListener('click', function (event) {
+        if (!bellIcon.contains(event.target) && !reminderPopup.contains(event.target)) {
+            reminderPopup.classList.remove('active');
+        }
+    });
+});
+</script>
 </body>
 </html>
 

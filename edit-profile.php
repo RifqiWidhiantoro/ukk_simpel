@@ -152,6 +152,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .back-link:hover {
             color: #3B82F6;
         }
+        .button-link {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(135deg, #3B82F6, #1E3A8A);
+        color: white;
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        line-height: normal;
+        border: none;
+        margin-top: 10px;
+        box-sizing: border-box;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+        }
+
+        .button-link:hover {
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+        }
+
     </style>
 </head>
 <body>
@@ -167,8 +190,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="file" name="profile_photo" accept="image/jpeg, image/jpg, image/png">
             <button type="submit">Simpan Perubahan</button>
         </form>
-        <a class="back-link" href="profile.php"><i class="bi bi-arrow-left"></i> Kembali ke Profil</a>
-    </div>
+        <a class="button-link" href="profile.php"> Profile</a>
+        </div>
 </body>
 </html>
 

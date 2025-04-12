@@ -98,6 +98,29 @@ $conn->close();
         .task-form button:hover {
             background: linear-gradient(135deg, #1E3A8A, #3B82F6);
         }
+        .button-link {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background: linear-gradient(135deg, #3B82F6, #1E3A8A);
+        color: white;
+        text-align: center;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: normal;
+        border: none;
+        margin-top: 10px;
+        box-sizing: border-box;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+        }
+
+        .button-link:hover {
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+        }
+
     </style>
 </head>
 <body>
@@ -128,6 +151,7 @@ $conn->close();
             </select>
             <button type="submit">Update Tugas</button>
         </form>
+        <a href="details.php?id=<?= $task['id'] ?>" class="button-link">Detail Tugas</a>
     </div>
 </body>
 </html>
