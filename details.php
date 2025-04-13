@@ -158,6 +158,16 @@ if (!empty($task['category_id'])) {
             <h2 class="text-xl font-semibold flex-1">Detail Tugas</h2>
         </div>
 
+        <!-- Task Data for JS -->
+        <div id="task-data"
+             data-title="<?= htmlspecialchars($task['title']) ?>"
+             data-description="<?= htmlspecialchars($task['description']) ?>"
+             data-priority="<?= htmlspecialchars($task['priority']) ?>"
+             data-category="<?= htmlspecialchars($category_name) ?>"
+             data-due="<?= htmlspecialchars($task['due_date']) ?>"
+             data-status="<?= htmlspecialchars($task['status']) ?>">
+        </div>
+
         <!-- Task Title -->
         <div class="mt-4 border-l-4 border-yellow-400 pl-3">
             <span class="text-yellow-500 text-lg"></span>
@@ -198,6 +208,9 @@ if (!empty($task['category_id'])) {
                 <a href="edit-task.php?id=<?= $task['id'] ?>" class="text-yellow-500 text-xl hover:opacity-75">
                     <i class="bi bi-pencil"></i>
                 </a>
+                <button onclick="printTaskDetails()" class="text-blue-500 text-xl hover:opacity-75">
+                    <i class="bi bi-printer"></i>
+                </button>
             </div>
 
             <!-- Complete Button -->
@@ -212,7 +225,87 @@ if (!empty($task['category_id'])) {
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- Print Script -->
+    <script>
+    function printTaskDetails() {
+        const taskData = document.getElementById('task-data');
+        const title = taskData.dataset.title;
+        const description = taskData.dataset.description;
+        const priority = taskData.dataset.priority;
+        const category = taskData.dataset.category;
+        const due = taskData.dataset.due;
+        const status = taskData.dataset.status;
+
+        const printContent = `
+            <html>
+            <head>
+                <title>Detail Tugas</title>
+                <style>
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        margin: 40px;
+                        color: #222;
+                        background: #fff;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 30px;
+                    }
+                    .header h2 {
+                        color: #1E3A8A;
+                        margin: 0;
+                    }
+                    .task-details {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 10px;
+                    }
+                    .task-details th,
+                    .task-details td {
+                        text-align: left;
+                        padding: 10px 15px;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    .task-details th {
+                        background-color: #f0f4ff;
+                        color: #1E3A8A;
+                        width: 200px;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 40px;
+                        font-size: 0.9rem;
+                        color: #888;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2>Detail Tugas</h2>
+                </div>
+                <table class="task-details">
+                    <tr><th>Judul</th><td>${title}</td></tr>
+                    <tr><th>Deskripsi</th><td>${description}</td></tr>
+                    <tr><th>Prioritas</th><td>${priority.charAt(0).toUpperCase() + priority.slice(1)}</td></tr>
+                    <tr><th>Kategori</th><td>${category}</td></tr>
+                    <tr><th>Jatuh Tempo</th><td>${due}</td></tr>
+                    <tr><th>Status</th><td>${status.charAt(0).toUpperCase() + status.slice(1)}</td></tr>
+                </table>
+                <div class="footer">
+                    Dicetak otomatis oleh KeepItDone &copy; 2025
+                </div>
+            </body>
+            </html>
+        `;
+
+        const newWindow = window.open('', '_blank');
+        newWindow.document.write(printContent);
+        newWindow.document.close();
+        newWindow.focus();
+        newWindow.print();
+    }
+    </script>
 </body>
-</html>
 
 <?php $conn->close(); ?>

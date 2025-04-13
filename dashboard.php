@@ -24,12 +24,12 @@ $today = date('Y-m-d');
 // Date 3 days from now
 $three_days_from_now = date('Y-m-d', strtotime('+3 days'));
 
-// Query for tasks with a deadline 3 days from now
+// Query for tasks with a deadline of 3 days left or past deadlines
 $reminder_sql = "
     SELECT title, due_date 
     FROM tasks 
     WHERE user_id = $user_id 
-      AND due_date = '$three_days_from_now' 
+      AND (due_date = '$three_days_from_now' OR due_date < '$today') 
       AND status != 'completed'
 ";
 $reminder_result = $conn->query($reminder_sql);
@@ -153,15 +153,105 @@ foreach ($dates as $date) {
             align-items: center;
             gap: 15px; /* Add spacing between items */
         }
-        header .nav-links a {
-            text-decoration: none;
-            color: #1E3A8A;
-            font-weight: bold;
+       
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: rgba(30, 58, 138, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            padding: 20px;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+            transition: right 0.3s ease;
+            z-index: 1000;
         }
+        .sidebar.active {
+            right: 0;
+        }
+
+        /* Sidebar Dark Mode */
+        .sidebar.dark {
+            background: linear-gradient(135deg, #111827, #1f2937); /* Gradient Dark */
+        }
+
+        /* Sidebar Isi */
+        .sidebar h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            transition: background 0.2s ease;
+            padding: 6px 12px;
+            border-radius: 10px;
+        }
+        .sidebar ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar .dark-mode-toggle {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar .dark-mode-toggle i {
+            font-size: 1.2rem;
+        }
+        .sidebar .dark-mode-toggle span {
+            font-size: 1rem;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #2c3e50, #4b6cb7);
+            color: white;
+        }      
+          /* Header icon */
+        header .menu-icon {
+            font-size: 1.7rem;
+            cursor: pointer;
+            color: #1E3A8A;
+            position: relative;
+        }
+        .menu-icon::before {
+            content: "\2630"; /* Hamburger ☰ */
+        }
+        .menu-icon.open::before {
+            content: "\2715"; /* Close ✕ */
+        }
+
         header .bell-icon {
-        position: relative;
-        cursor: pointer;
-    }
+            position: relative;
+            cursor: pointer;
+        }
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                width: 80%;
+            }
+        }
 
          header .bell-icon .notification {
         position: absolute;
@@ -177,9 +267,12 @@ foreach ($dates as $date) {
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+        }
 
         .reminder-popup {
+        top: 40px;
+        left: 40%;
+        transform: translateX(-50%);
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -401,7 +494,7 @@ foreach ($dates as $date) {
         <header>
             <div class="logo-container">
                 <img src="pictures/logo.png" alt="Logo" class="logo">
-                <h2>Dashboard</h2>
+                <h2>KeepItDone</h2>
             </div>
             <div class="nav-links">
                 <!-- Bell Icon -->
@@ -429,10 +522,23 @@ foreach ($dates as $date) {
                     <img src="<?= $profile_photo ?>" alt="Profile Photo">
                 </a>
 
-                <!-- Categories -->
-                <a href="manage-categories.php">Kategori</a>
+                <!-- Menu Icon -->
+                <i class="bi bi-list menu-icon"></i>
             </div>
         </header>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+    <h3>Menu</h3>
+    <ul>
+        <li><i class="bi bi-card-checklist"></i><a href="archive.php">Tasks</a></li>
+        <li><i class="bi bi-tags"></i><a href="manage-categories.php">Categories</a></li>
+    </ul>
+    <div class="dark-mode-toggle">
+        <i class="bi bi-moon"></i>
+        <span>Dark Mode</span>
+    </div>
+    </div>
 
         <!-- Info Hari Ini -->
         <div class="today-info">
@@ -487,7 +593,8 @@ foreach ($dates as $date) {
             <a href="task.php" class="add-task-button">Add New Task</a>
         </div>
     </div>
-    <script>
+
+<script>
     document.addEventListener('DOMContentLoaded', function () {
     const bellIcon = document.querySelector('.bell-icon');
     const reminderPopup = document.querySelector('.reminder-popup');
@@ -502,6 +609,61 @@ foreach ($dates as $date) {
     document.addEventListener('click', function (event) {
         if (!bellIcon.contains(event.target) && !reminderPopup.contains(event.target)) {
             reminderPopup.classList.remove('active');
+        }
+    });
+
+    const menuIcon = document.querySelector('.menu-icon');
+    const sidebar = document.querySelector('.sidebar');
+    const darkModeToggle = document.querySelector('.dark-mode-toggle');
+    const darkModeIcon = darkModeToggle.querySelector('i');
+    const darkModeText = darkModeToggle.querySelector('span');
+
+    // Toggle sidebar
+    menuIcon.addEventListener('click', function () {
+            sidebar.classList.toggle('active');
+            menuIcon.classList.toggle('open');
+        });
+        // Active link indicator
+        document.querySelectorAll('.sidebar ul li a').forEach(link => {
+            if (window.location.pathname.includes(link.getAttribute('href'))) {
+                link.classList.add('active');
+            }
+        });
+
+    // Toggle Dark Mode
+    darkModeToggle.addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+        sidebar.classList.toggle('dark');
+
+        if (document.body.classList.contains('dark-mode')) {
+            darkModeIcon.classList.replace('bi-moon', 'bi-sun');
+            darkModeText.textContent = 'Light Mode';
+        } else {
+            darkModeIcon.classList.replace('bi-sun', 'bi-moon');
+            darkModeText.textContent = 'Dark Mode';
+        }
+    });
+    // Swipe gesture for mobile
+    let touchStartX = 0;
+    document.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].clientX;
+    });
+    document.addEventListener('touchend', function (e) {
+        const touchEndX = e.changedTouches[0].clientX;
+        const diffX = touchEndX - touchStartX;
+
+        if (diffX > 50) {
+            sidebar.classList.add('active');
+            menuIcon.classList.add('open');
+        } else if (diffX < -50) {
+            sidebar.classList.remove('active');
+            menuIcon.classList.remove('open');
+        }
+    });
+    // Tutup sidebar jika klik di luar sidebar
+    document.addEventListener('click', function (event) {
+        if (!sidebar.contains(event.target) && !menuIcon.contains(event.target)) {
+            sidebar.classList.remove('active');
         }
     });
 });

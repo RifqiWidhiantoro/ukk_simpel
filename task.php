@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($conn->query($sql) === TRUE) {
             echo "<script>
                     alert('Tugas berhasil ditambahkan.');
-                    window.location.href = 'dashboard.php';
+                    window.location.href = 'dashboard.php'; // Tasks automatically appear in archive.php
                   </script>";
             exit();
         } else {
@@ -156,3 +156,4 @@ $today = date('Y-m-d');
 </html>
 <?php
 $conn->close();
+?>
