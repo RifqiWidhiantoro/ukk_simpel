@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi - To-Do List</title>
-    <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi - To-Do List</title>
     <style>
         * {
             margin: 0;
@@ -75,14 +69,17 @@
             background: #1E3A8A;
         }
         .login-link {
-            margin-top: 15px;
-            display: block;
             color: #1E3A8A;
             text-decoration: none;
             transition: color 0.3s;
         }
         .login-link:hover {
             color: #3B82F6;
+        }
+        .login-link-text {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #333;
         }
         @keyframes fadeIn {
             from {
@@ -131,10 +128,11 @@
             </div>
             <button type="submit" class="btn">Daftar</button>
         </form>
-        <a href="login-page.php" class="login-link">Sudah punya akun? Login</a>
+        <p class="login-link-text">Sudah punya akun? <a href="login-page.php" class="login-link">Login</a></p>
     </div>
 </body>
 </html>
+
 <script>
     function validateForm() {
         const password = document.getElementById("password").value;
@@ -149,6 +147,8 @@
         }
         return true;
     }
+</script>
+
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST["username"]);
@@ -183,18 +183,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
     $stmt->close();
-    
+
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-    
+
     $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $username, $email, $hashed_password);
-    
+
     if ($stmt->execute()) {
         echo "<script>alert('Registrasi berhasil! Silakan login.'); window.location.href = 'login-page.php';</script>";
     } else {
         echo "<script>alert('Registrasi gagal, silakan coba lagi!'); window.location.href = 'register-page.php';</script>";
     }
-    
+
     $stmt->close();
     $conn->close();
 }

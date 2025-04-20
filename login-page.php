@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
-    
+
     if ($stmt->num_rows > 0) {
         $stmt->bind_result($user_id, $hashed_password, $role);
         $stmt->fetch();
@@ -51,6 +51,7 @@ $conn->close();
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
+
         body {
             display: flex;
             justify-content: center;
@@ -58,6 +59,7 @@ $conn->close();
             height: 100vh;
             background: linear-gradient(135deg, #1E3A8A, #3B82F6);
         }
+
         .login-container {
             background: white;
             padding: 30px;
@@ -68,20 +70,24 @@ $conn->close();
             max-width: 400px;
             animation: fadeIn 1s ease-in-out;
         }
+
         .logo {
             width: 100px;
             margin-bottom: 20px;
         }
+
         .input-group {
             margin-bottom: 20px;
             text-align: left;
         }
+
         .input-group label {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
             color: #1E3A8A;
         }
+
         .input-group input {
             width: 100%;
             padding: 12px;
@@ -89,9 +95,11 @@ $conn->close();
             border-radius: 5px;
             transition: border-color 0.3s;
         }
+
         .input-group input:focus {
             border-color: #1E3A8A;
         }
+
         .btn {
             width: 100%;
             padding: 12px;
@@ -102,19 +110,28 @@ $conn->close();
             cursor: pointer;
             transition: background 0.3s;
         }
+
         .btn:hover {
             background: #1E3A8A;
         }
-        .register-link {
+
+        .register-text {
             margin-top: 15px;
-            display: block;
+            font-size: 14px;
+            color: #1E3A8A;
+        }
+
+        .register-link {
             color: #1E3A8A;
             text-decoration: none;
+            font-weight: bold;
             transition: color 0.3s;
         }
+
         .register-link:hover {
             color: #0F172A;
         }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -125,14 +142,17 @@ $conn->close();
                 transform: translateY(0);
             }
         }
+
         @media (max-width: 600px) {
             .login-container {
                 padding: 20px;
                 max-width: 90%;
             }
+
             .input-group input {
                 padding: 10px;
             }
+
             .btn {
                 padding: 10px;
             }
@@ -154,7 +174,7 @@ $conn->close();
             </div>
             <button type="submit" class="btn">Login</button>
         </form>
-        <a href="register-page.php" class="register-link">Belum punya akun? Daftar</a>
+        <p class="register-text">Belum punya akun? <a href="register-page.php" class="register-link">Daftar</a></p>
     </div>
 </body>
 </html>

@@ -41,7 +41,7 @@ $sql = "CREATE TABLE IF NOT EXISTS categories (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) UNIQUE NOT NULL,
     user_id INT NULL,
-    role ENUM('admin', 'user') NOT NULL DEFAULT 'user',
+    role ENUM('admin', 'user', 'anonymous') NOT NULL DEFAULT 'user',
     deleted_at TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 )";

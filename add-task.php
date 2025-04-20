@@ -41,10 +41,27 @@ if ($user_check->num_rows == 0) {
 }
 $user_check->close();
 
+// Restrict categories displayed in the dropdown for adding tasks
+$cat_sql = "SELECT * FROM categories WHERE user_id = $user_id OR role = 'admin' ORDER BY name ASC";
+$categories = $conn->query($cat_sql);
+
 // Proses penyimpanan ke database
 $stmt = $conn->prepare("INSERT INTO tasks (title, description, priority, category_id, due_date, user_id) VALUES (?, ?, ?, ?, ?, ?)");
 $stmt->bind_param("sssssi", $title, $description, $priority, $category_id, $due_date, $user_id);
 if ($stmt->execute()) {
+    // Check if the task's deadline is 3 days from today
+    $three_days_from_now = date('Y-m-d', strtotime('+3 days'));
+    if ($due_date === $three_days_from_now) {
+        // Initialize the session array if not already set
+        if (!isset($_SESSION['reminder_tasks'])) {
+            $_SESSION['reminder_tasks'] = [];
+        }
+        // Add the task to the reminder feature
+        $_SESSION['reminder_tasks'][] = [
+            'title' => $title,
+            'due_date' => $due_date
+        ];
+    }
     header("Location: dashboard.php");
 } else {
     echo "Error: " . $stmt->error;

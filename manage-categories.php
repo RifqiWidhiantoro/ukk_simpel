@@ -38,33 +38,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     elseif (isset($_POST['edit_category'])) {
         $id = intval($_POST['id']);
         $name = trim($_POST['name']);
-        
-        // Check if category name already exists for the user or admin
-        $stmt = $conn->prepare("SELECT id FROM categories WHERE name = ? AND id != ? AND (user_id = ? OR role = 'admin')");
-        $stmt->bind_param("sii", $name, $id, $user_id);
+
+        // Check if the category belongs to the admin
+        $stmt = $conn->prepare("SELECT role, user_id FROM categories WHERE id = ?");
+        $stmt->bind_param("i", $id);
         $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            echo "<script>alert('Nama kategori sudah ada!'); window.history.back();</script>";
-            exit();
+        $stmt->bind_result($role, $category_user_id);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($role === 'admin' && $category_user_id === null) {
+            // If the category is an admin category, create a new category for the user with a unique name
+            $unique_name = $name . " (User $user_id)";
+            $stmt = $conn->prepare("INSERT INTO categories (name, user_id, role) VALUES (?, ?, 'user')");
+            $stmt->bind_param("si", $unique_name, $user_id);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            // Otherwise, update the category for the user
+            $stmt = $conn->prepare("UPDATE categories SET name = ? WHERE id = ? AND user_id = ?");
+            $stmt->bind_param("sii", $name, $id, $user_id);
+            $stmt->execute();
+            $stmt->close();
         }
-        $stmt->close();
-        
-        // Hanya pemilik kategori atau admin yang bisa edit
-        $stmt = $conn->prepare("UPDATE categories SET name = ? WHERE id = ? AND (user_id = ? OR role = 'admin')");
-        $stmt->bind_param("sii", $name, $id, $user_id);
-        $stmt->execute();
-        $stmt->close();
     } 
     // Hapus Kategori
     elseif (isset($_POST['delete_category'])) {
         $id = intval($_POST['id']);
-        
-        // Hanya pemilik kategori atau admin yang bisa hapus
-        $stmt = $conn->prepare("DELETE FROM categories WHERE id = ? AND (user_id = ? OR role = 'admin')");
-        $stmt->bind_param("ii", $id, $user_id);
+
+        // Check if the category belongs to the admin
+        $stmt = $conn->prepare("SELECT role, user_id FROM categories WHERE id = ?");
+        $stmt->bind_param("i", $id);
         $stmt->execute();
+        $stmt->bind_result($role, $category_user_id);
+        $stmt->fetch();
         $stmt->close();
+
+        if ($role === 'admin' && $category_user_id === null) {
+            // If the category is an admin category, create a new category for the user with a unique name
+            $stmt = $conn->prepare("SELECT name FROM categories WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->bind_result($admin_name);
+            $stmt->fetch();
+            $stmt->close();
+
+            $unique_name = $admin_name . " (User $user_id)";
+            $stmt = $conn->prepare("INSERT INTO categories (name, user_id, role) VALUES (?, ?, 'user')");
+            $stmt->bind_param("si", $unique_name, $user_id);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            // Otherwise, delete the category for the user
+            $stmt = $conn->prepare("DELETE FROM categories WHERE id = ? AND user_id = ?");
+            $stmt->bind_param("ii", $id, $user_id);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 }
 
@@ -144,7 +174,7 @@ if ($user_role === 'admin') {
             text-align: center;
         }
         .actions button {
-            margin: 0 5px;
+            margin: 8px 5px;
             padding: 5px 10px;
             border: none;
             cursor: pointer;

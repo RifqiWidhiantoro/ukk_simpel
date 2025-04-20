@@ -40,6 +40,23 @@ if ($reminder_result->num_rows > 0) {
     }
 }
 
+// Merge session-based reminders with database reminders
+if (isset($_SESSION['reminder_tasks']) && is_array($_SESSION['reminder_tasks'])) {
+    foreach ($_SESSION['reminder_tasks'] as $task) {
+        // Avoid duplicate reminders by checking if the task already exists in $reminder_tasks
+        $exists = false;
+        foreach ($reminder_tasks as $existing_task) {
+            if ($existing_task['title'] === $task['title'] && $existing_task['due_date'] === $task['due_date']) {
+                $exists = true;
+                break;
+            }
+        }
+        if (!$exists) {
+            $reminder_tasks[] = $task;
+        }
+    }
+}
+
 // Get date parameter from URL or use today's date
 $filter_date = isset($_GET['date']) ? $_GET['date'] : $today;
 
@@ -270,28 +287,26 @@ foreach ($dates as $date) {
         }
 
         .reminder-popup {
-        top: 40px;
-        left: 40%;
-        transform: translateX(-50%);
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
         position: absolute;
         top: 40px;
-        right: 0; /* Adjusted to align with the bell icon */
+        right: 0;
         background: white;
         border: 1px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         padding: 10px;
         width: 300px;
-        max-width: 90vw; /* Responsive width */
+        max-width: 90vw;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
         z-index: 1000;
-    }
+
+        }
         .reminder-popup.active {
         opacity: 1;
         visibility: visible;
-    }
+        }
 
         .reminder-popup h4 {
             margin-bottom: 10px;
@@ -498,7 +513,7 @@ foreach ($dates as $date) {
             </div>
             <div class="nav-links">
                 <!-- Bell Icon -->
-                <div class="bell-icon">
+                <div class="bell-icon" style="position: relative;">
                     <i class="bi bi-bell"></i>
                     <?php if (count($reminder_tasks) > 0): ?>
                         <div class="notification"><?= count($reminder_tasks) ?></div>

@@ -47,7 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $task = $result->fetch_assoc();
 }
 
-$categories = $conn->query("SELECT * FROM categories ORDER BY name ASC");
+$user_id = $_SESSION['user_id'];
+$categories = $conn->query("SELECT * FROM categories WHERE user_id = $user_id OR role = 'admin' ORDER BY name ASC");
 $conn->close();
 ?>
 
